@@ -93,3 +93,15 @@ def insert_TRXTBK_debito(df):
         cursor.commit()
         cursor.close()
   
+
+def delete_credito_t():
+    cursor = cnxn.cursor()
+    sql = "DELETE FROM dbo.credito_New$_t"
+    cursor.execute(sql)
+    cursor.commit()
+
+def delete_debito_t():
+    cursor = cnxn.cursor()
+    sql = "DELETE FROM dbo.debito_New$_t"
+    cursor.execute(sql)
+    cursor.commit()    

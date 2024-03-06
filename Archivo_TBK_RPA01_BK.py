@@ -104,7 +104,7 @@ def func_descarga_archivos():
     time.sleep(1)
     sorting_file = driver.find_element(By.XPATH, '/html/body/div[1]/section/div[4]/div[4]/div[1]/div/table/thead/tr/th[1]')
     sorting_file.click()
-    time.sleep(1)
+    time.sleep(10)
     nombre = driver.find_element(By.XPATH, '/html/body/div[1]/section/div[4]/div[4]/div[1]/div/table/tbody/tr[1]/td[4]')
     nombre_archivo = nombre.text
     nombre2 = driver.find_element(By.XPATH,'/html/body/div[1]/section/div[4]/div[4]/div[1]/div/table/tbody/tr[2]/td[4]')
@@ -159,8 +159,11 @@ def func_descarga_archivos():
     #Borramos el archivo zip
     os.remove(archivo_comprimido_debito)
     os.remove(archivo_comprimido_credito)
+    bd_tbk.delete_credito_t()
+    bd_tbk.delete_debito_t()
+    time.sleep(5)    
     insert_excel_to_DWH_debito(nombre_final_debito_dat)
-    time.sleep(20)
+    time.sleep(10)
     insert_excel_to_DWH_credito(nombre_final_credito_dat)
 
 def insert_excel_to_DWH_debito(file_name):
@@ -249,7 +252,8 @@ def insert_excel_to_DWH_credito(file_name):
     path = os.getenv('RUTA_CARPETA') + file_name # Cambiar luego la ruta donde quedara el archivo final.
     if os.path.exists(path):
         n = 38 # your line count.
-        df = pd.read_csv(path,encoding='latin1' ,skiprows=n, delimiter=';' )
+        dtype_dict = {'Comisión Adicional e IVA Comisión Adicional': 'str', 'Devolución Comisión Adicional e IVA Comisión': 'str', 'Monto Retención': 'str', 'Período de Cobro':'str'}
+        df = pd.read_csv(path,encoding='latin1' ,skiprows=n, delimiter=';', dtype=dtype_dict )
         df = df.rename(columns={'Tipo Transacción': 'Tipo_trx','Fecha Venta':'Fecha_venta','Tipo Tarjeta':'Tipo_Tarjeta','Identificador':'Identificador','Tipo Cuota':'Tipo_Cuota','Monto Original Venta':'Monto_original_venta',
                                 'Código Autorización Venta':'Codigo_autorizacion_venta','Nº Cuota':'Numero_cuota','Monto Para Abono':'Monto_para_abono','Comisión e IVA Comisión':'Comision_e_iva_comision',
                                 'Comisión Adicional e IVA Comisión Adicional':'Comision_adicional_e_iva_comision_adicional','N° Boleta':'Numero_boleta','Monto Anulación':'Monto_anulacion','Devolución Comisión e IVA Comisión':'Devolucion_comision_e_iva_comision',
