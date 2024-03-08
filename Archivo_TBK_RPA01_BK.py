@@ -141,7 +141,7 @@ def func_descarga_archivos():
     time.sleep(1)
     download_file2 = driver.find_element(By.XPATH,'/html/body/div[1]/section/div[4]/div[4]/div[1]/div/table/tbody/tr[2]/td[6]/table/tbody/tr[1]/td/a/i')
     download_file2.click()
-    time.sleep(5)
+    time.sleep(15)
     # hay dias en que viene el archivo con formato .dat
     nombre_final_credito_dat = nombre_final_credito.replace("zip","dat")
     nombre_final_debito_dat = nombre_final_debito.replace("zip","dat")
