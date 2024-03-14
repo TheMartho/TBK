@@ -6,6 +6,7 @@ pd.options.mode.chained_assignment = None  # default='warn'
 from selenium import webdriver
 from selenium.webdriver import Keys
 from selenium.webdriver.common.by import By
+from selenium.common.exceptions import NoSuchElementException
 from selenium.webdriver.common.action_chains import ActionChains
 
 from zipfile import ZipFile
@@ -54,21 +55,41 @@ def func_descarga_archivos():
     driver.switch_to.frame(iframe)
     time.sleep(1)
     fecha_desde = driver.find_element(By.XPATH, '/html/body/div[2]/div/div/div/div[2]/div/div/div/div/div/div[1]/div/div[1]/div/div[1]/div/form/table/tbody/tr[2]/td[4]/table/tbody/tr/td[1]/input')
-    fecha_desde.send_keys(Keys.BACKSPACE)
+    dt = datetime.now()
+    if dt.day >9:
+        fecha_desde.send_keys(Keys.BACKSPACE)
+        fecha_desde.send_keys(Keys.BACKSPACE)        
+    else:
+        fecha_desde.send_keys(Keys.BACKSPACE)       
     fecha_desde.send_keys(1)
     time.sleep(1)
     boton_local = driver.find_element(By.XPATH, '/html/body/div[2]/div/div/div/div[2]/div/div/div/div/div/div[1]/div/div[2]/div/div[2]/div/div[2]/div/div/div/img') 
     boton_local.click()
-    time.sleep(2)
+    time.sleep(4)
+    #boton_desmarcar = driver.find_element(By.XPATH, '/html/body/div[4]/div/div[2]/div/div/div/div[2]/div/div[2]/div/table/tbody/tr/td')
+    #boton_desmarcar.click()  
+    #time.sleep(1)
     boton_desmarcar = driver.find_element(By.XPATH, '/html/body/div[4]/div/div[2]/div/div/div/div[2]/div/div[2]/div/table/tbody/tr/td')
-    boton_desmarcar.click()  
-    time.sleep(1)
-    boton_MC1 = driver.find_element(By.XPATH, '/html/body/div[4]/div/div[2]/div/div/div/div[1]/div/div[2]/div/div/div/div[6]/input')
-    boton_MC1.click()
-    time.sleep(1)
-    boton_MC2 = driver.find_element(By.XPATH, '/html/body/div[4]/div/div[2]/div/div/div/div[1]/div/div[2]/div/div/div/div[7]/input')
-    boton_MC2.click()
-    time.sleep(1)
+    boton_desmarcar.click()
+    time.sleep(1)  
+    for i in range (0,10):
+        try:
+            boton_MC1 = driver.find_element(By.CSS_SELECTOR, '.txpms-option:nth-child('+str(i)+') > input')
+            inner_text = boton_MC1.get_attribute("outerHTML")
+            if '07737092' in inner_text:
+                boton_MC1.click()
+                #print(inner_text)
+            elif '07737084' in inner_text:
+                boton_MC1.click()
+                #print(inner_text)
+        except NoSuchElementException:
+            boton_MC1 = 0    
+    #boton_MC1 = driver.find_element(By.XPATH, '/html/body/div[4]/div/div[2]/div/div/div/div[1]/div/div[2]/div/div/div/div[6]/input')
+    #boton_MC1.click()
+    #time.sleep(1)
+    #boton_MC2 = driver.find_element(By.XPATH, '/html/body/div[4]/div/div[2]/div/div/div/div[1]/div/div[2]/div/div/div/div[7]/input')
+    #boton_MC2.click()
+    time.sleep(2)
     confirm = driver.find_element(By.XPATH, '/html/body/div[4]/div/div[2]/div/div/div/div[3]/div/div[1]/div/table/tbody/tr/td')
     confirm.click()
     time.sleep(1)
@@ -104,7 +125,7 @@ def func_descarga_archivos():
     time.sleep(1)
     sorting_file = driver.find_element(By.XPATH, '/html/body/div[1]/section/div[4]/div[4]/div[1]/div/table/thead/tr/th[1]')
     sorting_file.click()
-    time.sleep(10)
+    time.sleep(25)
     nombre = driver.find_element(By.XPATH, '/html/body/div[1]/section/div[4]/div[4]/div[1]/div/table/tbody/tr[1]/td[4]')
     nombre_archivo = nombre.text
     nombre2 = driver.find_element(By.XPATH,'/html/body/div[1]/section/div[4]/div[4]/div[1]/div/table/tbody/tr[2]/td[4]')
@@ -138,10 +159,10 @@ def func_descarga_archivos():
     time.sleep(1)
     download_file = driver.find_element(By.XPATH,'/html/body/div[1]/section/div[4]/div[4]/div[1]/div/table/tbody/tr[1]/td[6]/table/tbody/tr[1]/td/a/i')
     download_file.click()
-    time.sleep(1)
+    time.sleep(5)
     download_file2 = driver.find_element(By.XPATH,'/html/body/div[1]/section/div[4]/div[4]/div[1]/div/table/tbody/tr[2]/td[6]/table/tbody/tr[1]/td/a/i')
     download_file2.click()
-    time.sleep(15)
+    time.sleep(20)
     # hay dias en que viene el archivo con formato .dat
     nombre_final_credito_dat = nombre_final_credito.replace("zip","dat")
     nombre_final_debito_dat = nombre_final_debito.replace("zip","dat")
