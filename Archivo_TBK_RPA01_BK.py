@@ -15,6 +15,7 @@ from zipfile import ZipFile
 
 import os
 import bd_tbk
+import alert
 
 import os
 from dotenv import load_dotenv
@@ -364,7 +365,7 @@ def retry():
         except:
             minimo += 1
         if minimo == maximo:
-            send.envio_email("[RPA TBK TRX DUPLICADAS] Reintentos ", "Se llego al limite de reintentos : " + str(maximo))
+            alert.envio_email("[RPA TBK TRX DUPLICADAS] Reintentos ", "Se llego al limite de reintentos : " + str(maximo))
             log = "[RPA TBK TRX DUPLICADAS] Reintentos ", "Se llego al limite de reintentos : " + str(maximo)
             logconfig.log_info(log)
             break
