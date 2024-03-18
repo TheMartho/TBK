@@ -1,6 +1,8 @@
 from datetime import datetime
 import time
 
+from unittest import mock
+
 import pandas as pd
 pd.options.mode.chained_assignment = None  # default='warn'
 from selenium import webdriver
@@ -178,6 +180,7 @@ def func_descarga_archivos():
         zip.printdir()
         zip.extractall(os.getenv('RUTA_CARPETA'))
     #Borramos el archivo zip
+    time.sleep(5)    
     os.remove(archivo_comprimido_debito)
     os.remove(archivo_comprimido_credito)
     bd_tbk.delete_credito_t()
@@ -350,4 +353,20 @@ def insert_excel_to_DWH_credito(file_name):
         current_time_end = now.strftime("%H:%M:%S")
         print("Tiempo Fin insercion BD =", current_time_end)
 
-func_descarga_archivos()
+
+def retry():
+    minimo = 0
+    maximo = 4
+    while minimo <= maximo:
+        try:
+            func_descarga_archivos()
+            break
+        except:
+            minimo += 1
+        if minimo == maximo:
+            send.envio_email("[RPA TBK TRX DUPLICADAS] Reintentos ", "Se llego al limite de reintentos : " + str(maximo))
+            log = "[RPA TBK TRX DUPLICADAS] Reintentos ", "Se llego al limite de reintentos : " + str(maximo)
+            logconfig.log_info(log)
+            break
+
+retry()
