@@ -172,24 +172,28 @@ def func_descarga_archivos():
     archivo_comprimido_debito = os.getenv('RUTA_CARPETA') + nombre_final_debito
     archivo_comprimido_credito = os.getenv('RUTA_CARPETA') + nombre_final_credito    
     #Extraemos el archivo de debito que viene con formato zip
-    with ZipFile(archivo_comprimido_debito, "r") as zip:
-        zip.printdir()
-        zip.extractall(os.getenv('RUTA_CARPETA'))
 
-    #Extraemos el archivo de debito que viene con formato zip
-    with ZipFile(archivo_comprimido_credito, "r") as zip:
-        zip.printdir()
-        zip.extractall(os.getenv('RUTA_CARPETA'))
+    if '.zip' in archivo_comprimido_debito:
+        with ZipFile(archivo_comprimido_debito, "r") as zip:
+            zip.printdir()
+            zip.extractall(os.getenv('RUTA_CARPETA'))
+    if '.zip' in archivo_comprimido_credito:
+        #Extraemos el archivo de debito que viene con formato zip
+        with ZipFile(archivo_comprimido_credito, "r") as zip:
+            zip.printdir()
+            zip.extractall(os.getenv('RUTA_CARPETA'))
     #Borramos el archivo zip
     time.sleep(5)    
-    os.remove(archivo_comprimido_debito)
-    os.remove(archivo_comprimido_credito)
     bd_tbk.delete_credito_t()
     bd_tbk.delete_debito_t()
+    print(nombre_final_debito_dat)
+    print(nombre_final_credito_dat)
     time.sleep(5)    
     insert_excel_to_DWH_debito(nombre_final_debito_dat)
     time.sleep(10)
     insert_excel_to_DWH_credito(nombre_final_credito_dat)
+    os.remove(archivo_comprimido_debito)
+    os.remove(archivo_comprimido_credito)    
 
 def insert_excel_to_DWH_debito(file_name):
     path = os.getenv('RUTA_CARPETA') + file_name # Cambiar luego la ruta donde quedara el archivo final.
@@ -203,33 +207,32 @@ def insert_excel_to_DWH_debito(file_name):
         df2 = df[["Tipo_trx","Fecha_venta","Tipo_Tarjeta","Identificador","Tipo_Venta","Codigo_autorizacion_venta","Numero_cuota","Monto_TRX","Monto_afecto","Comision_e_iva_comision",
         "Monto_exento","Numero_boleta","Monto_anulacion","Monto_retenido","Devolucion_comision","Monto_retencion","Motivo","Periodo_de_cobro","Detalle_cobros_u_observacion",
         "Monto","IVA","Fecha_abono","Cuenta_de_abono","Local"]]
-        df2["Tipo_trx"].fillna("", inplace = True) #Reemplazamos los valores null
-        df2["Fecha_venta"].fillna("", inplace = True) #Reemplazamos los valores null
-        df2["Tipo_Tarjeta"].fillna("", inplace = True) #Reemplazamos los valores null    
-        df2["Identificador"].fillna("", inplace = True) #Reemplazamos los valores null
-        df2["Tipo_Venta"].fillna("", inplace = True) #Reemplazamos los valores null
-        df2["Codigo_autorizacion_venta"].fillna("", inplace = True) #Reemplazamos los valores null
-        df2["Numero_cuota"].fillna("", inplace = True) #Reemplazamos los valores null
-        df2["Monto_TRX"].fillna("0", inplace = True) #Reemplazamos los valores null     
-        df2["Monto_afecto"].fillna("0", inplace = True) #Reemplazamos los valores null      
-        df2["Comision_e_iva_comision"].fillna("0", inplace = True) #Reemplazamos los valores null 
-        df2["Monto_exento"].fillna("", inplace = True) #Reemplazamos los valores null 
-        df2["Numero_boleta"].fillna("", inplace = True) #Reemplazamos los valores null
-        df2["Monto_anulacion"].fillna("0", inplace = True)
-        df2["Monto_retenido"].fillna("0", inplace = True)        
-        df2["Monto_retenido"].fillna(0) #Reemplazamos los valores null 
-        df2["Devolucion_comision"].fillna("", inplace = True) #Reemplazamos los valores null 
-        df2["Monto_retencion"].fillna("", inplace = True) #Reemplazamos los valores null 
-        df2["Motivo"].fillna("", inplace = True) #Reemplazamos los valores null           
-        df2["Periodo_de_cobro"].fillna("", inplace = True) #Reemplazamos los valores null        
-        df2["Detalle_cobros_u_observacion"].fillna("", inplace = True) #Reemplazamos los valores null    
-        df2["Monto"].fillna("", inplace = True) #Reemplazamos los valores null    
-        df2["IVA"].fillna("", inplace = True) #Reemplazamos los valores null    
-        df2["Fecha_abono"].fillna("", inplace = True) #Reemplazamos los valores null       
-        df2["Cuenta_de_abono"].fillna("", inplace = True) #Reemplazamos los valores null           
-        df2["Local"].fillna("", inplace = True) #Reemplazamos los valores null
-        #df2["Tipo_documento"].fillna("", inplace = True) #Reemplazamos los valores null        
-
+        df2["Tipo_trx"] = df2["Tipo_trx"].fillna("")#df2["Tipo_trx"].fillna("", inplace = True) #Reemplazamos los valores null
+        df2["Fecha_venta"] = df2["Fecha_venta"].fillna("")#df2["Fecha_venta"].fillna("", inplace = True) #Reemplazamos los valores null
+        df2["Tipo_Tarjeta"] = df2["Tipo_Tarjeta"].fillna("")# df2["Tipo_Tarjeta"].fillna("", inplace = True) #Reemplazamos los valores null    
+        df2["Identificador"] = df2["Identificador"].fillna("")#df2["Identificador"].fillna("", inplace = True) #Reemplazamos los valores null
+        df2["Tipo_Venta"] = df2["Tipo_Venta"].fillna("")#df2["Tipo_Venta"].fillna("", inplace = True) #Reemplazamos los valores null
+        df2["Codigo_autorizacion_venta"] = df2["Codigo_autorizacion_venta"].fillna("")# df2["Codigo_autorizacion_venta"].fillna("", inplace = True) #Reemplazamos los valores null
+        df2["Numero_cuota"] = df2["Numero_cuota"].fillna("")# df2["Numero_cuota"].fillna("", inplace = True) #Reemplazamos los valores null
+        df2["Monto_TRX"] = df2["Monto_TRX"].fillna("")# df2["Monto_TRX"].fillna("0", inplace = True) #Reemplazamos los valores null     
+        df2["Monto_afecto"] = df2["Monto_afecto"].fillna("0")# df2["Monto_afecto"].fillna("0", inplace = True) #Reemplazamos los valores null      
+        df2["Comision_e_iva_comision"] = df2["Comision_e_iva_comision"].fillna("0")# df2["Comision_e_iva_comision"].fillna("0", inplace = True) #Reemplazamos los valores null 
+        df2["Monto_exento"] = df2["Monto_exento"].fillna("")# df2["Monto_exento"].fillna("", inplace = True) #Reemplazamos los valores null 
+        df2["Numero_boleta"] = df2["Numero_boleta"].fillna("")# df2["Numero_boleta"].fillna("", inplace = True) #Reemplazamos los valores null
+        df2["Monto_anulacion"] = df2["Monto_anulacion"].fillna("0")# df2["Monto_anulacion"].fillna("0", inplace = True)
+        df2["Monto_retenido"] = df2["Monto_retenido"].fillna("0")# df2["Monto_retenido"].fillna("0", inplace = True)        
+        df2["Monto_retenido"] = df2["Monto_retenido"].fillna(0)# df2["Monto_retenido"].fillna(0) #Reemplazamos los valores null 
+        df2["Devolucion_comision"] = df2["Devolucion_comision"].fillna("")# df2["Devolucion_comision"].fillna("", inplace = True) #Reemplazamos los valores null 
+        df2["Monto_retencion"] = df2["Monto_retencion"].fillna("")# df2["Monto_retencion"].fillna("", inplace = True) #Reemplazamos los valores null 
+        df2["Motivo"] = df2["Motivo"].fillna("")# df2["Motivo"].fillna("", inplace = True) #Reemplazamos los valores null           
+        df2["Periodo_de_cobro"] = df2["Periodo_de_cobro"].fillna("")# df2["Periodo_de_cobro"].fillna("", inplace = True) #Reemplazamos los valores null        
+        df2["Detalle_cobros_u_observacion"] = df2["Detalle_cobros_u_observacion"].fillna("")# df2["Detalle_cobros_u_observacion"].fillna("", inplace = True) #Reemplazamos los valores null    
+        df2["Monto"] = df2["Monto"].fillna("")# df2["Monto"].fillna("", inplace = True) #Reemplazamos los valores null    
+        df2["IVA"] = df2["IVA"].fillna("")# df2["IVA"].fillna("", inplace = True) #Reemplazamos los valores null    
+        df2["Fecha_abono"] = df2["Fecha_abono"].fillna("")# df2["Fecha_abono"].fillna("", inplace = True) #Reemplazamos los valores null       
+        df2["Cuenta_de_abono"] = df2["Cuenta_de_abono"].fillna("")# df2["Cuenta_de_abono"].fillna("", inplace = True) #Reemplazamos los valores null           
+        df2["Local"] = df2["Local"].fillna("")# df2["Local"].fillna("", inplace = True) #Reemplazamos los valores null
+        #df2["Tipo_documento"].fillna("", inplace = True) #Reemplazamos los valores null    
         #Seteo de formato de cada variable              
         df2['Tipo_trx']                     = df2['Tipo_trx'].astype(str)
         #df2['Fecha_venta']                  = df2['Fecha_venta'].astype('datetime64[ns]')
@@ -286,31 +289,31 @@ def insert_excel_to_DWH_credito(file_name):
                                 'Detalle de cobros u observación':'Detalle_cobros_u_observacion','Monto':'Monto','IVA':'IVA','Fecha Abono':'Fecha_abono','Cuenta de Abono':'Cuenta_de_abono','Local':'Local'})    
         df2 = df[["Tipo_trx","Fecha_venta","Tipo_Tarjeta","Identificador","Tipo_Cuota","Monto_original_venta","Codigo_autorizacion_venta","Numero_cuota","Monto_para_abono","Comision_e_iva_comision","Comision_adicional_e_iva_comision_adicional","Numero_boleta",
                 "Monto_anulacion","Devolucion_comision_e_iva_comision","Devolucion_comision_adicional_e_iva_comision","Monto_retencion","Periodo_de_cobro","Motivo","Detalle_cobros_u_observacion","Monto","IVA","Fecha_abono","Cuenta_de_abono","Local"]]
-        df2["Tipo_trx"].fillna("", inplace = True) #Reemplazamos los valores null
-        df2["Fecha_venta"].fillna("", inplace = True) #Reemplazamos los valores null
-        df2["Tipo_Tarjeta"].fillna("", inplace = True) #Reemplazamos los valores null    
-        df2["Identificador"].fillna("", inplace = True) #Reemplazamos los valores null
-        df2["Tipo_Cuota"].fillna("", inplace = True) #Reemplazamos los valores null
-        df2["Monto_original_venta"].fillna("", inplace = True) #Reemplazamos los valores null
-        df2["Codigo_autorizacion_venta"].fillna("", inplace = True) #Reemplazamos los valores null
-        df2["Numero_cuota"].fillna("", inplace = True) #Reemplazamos los valores null
-        df2["Monto_para_abono"].fillna("", inplace = True) #Reemplazamos los valores null
-        df2["Comision_e_iva_comision"].fillna("", inplace = True) #Reemplazamos los valores null      
-        df2["Comision_adicional_e_iva_comision_adicional"].fillna("", inplace = True) #Reemplazamos los valores null 
-        df2["Numero_boleta"].fillna("", inplace = True) #Reemplazamos los valores null 
-        df2["Monto_anulacion"].fillna("", inplace = True) #Reemplazamos los valores null
-        df2["Monto_anulacion"].fillna("0", inplace = True)
-        df2["Devolucion_comision_e_iva_comision"].fillna(0) #Reemplazamos los valores null 
-        df2["Devolucion_comision_adicional_e_iva_comision"].fillna("", inplace = True) #Reemplazamos los valores null 
-        df2["Monto_retencion"].fillna("", inplace = True) #Reemplazamos los valores null 
-        df2["Periodo_de_cobro"].fillna("", inplace = True) #Reemplazamos los valores null 
-        df2["Motivo"].fillna("", inplace = True) #Reemplazamos los valores null          
-        df2["Detalle_cobros_u_observacion"].fillna("", inplace = True) #Reemplazamos los valores null    
-        df2["Monto"].fillna("", inplace = True) #Reemplazamos los valores null    
-        df2["IVA"].fillna("", inplace = True) #Reemplazamos los valores null    
-        df2["Fecha_abono"].fillna("", inplace = True) #Reemplazamos los valores null       
-        df2["Cuenta_de_abono"].fillna("", inplace = True) #Reemplazamos los valores null           
-        df2["Local"].fillna("", inplace = True) #Reemplazamos los valores null
+        df2["Tipo_trx"] = df2["Tipo_trx"].fillna("")#df2["Tipo_trx"].fillna("", inplace = True) #Reemplazamos los valores null
+        df2["Fecha_venta"] = df2["Fecha_venta"].fillna("")#df2["Fecha_venta"].fillna("", inplace = True) #Reemplazamos los valores null
+        df2["Tipo_Tarjeta"] = df2["Tipo_Tarjeta"].fillna("")#df2["Tipo_Tarjeta"].fillna("", inplace = True) #Reemplazamos los valores null    
+        df2["Identificador"] = df2["Identificador"].fillna("")#df2["Identificador"].fillna("", inplace = True) #Reemplazamos los valores null
+        df2["Tipo_Cuota"] = df2["Tipo_Cuota"].fillna("")#df2["Tipo_Cuota"].fillna("", inplace = True) #Reemplazamos los valores null
+        df2["Monto_original_venta"] = df2["Monto_original_venta"].fillna("")#df2["Monto_original_venta"].fillna("", inplace = True) #Reemplazamos los valores null
+        df2["Codigo_autorizacion_venta"] = df2["Codigo_autorizacion_venta"].fillna("")#df2["Codigo_autorizacion_venta"].fillna("", inplace = True) #Reemplazamos los valores null
+        df2["Numero_cuota"] = df2["Numero_cuota"].fillna("")#df2["Numero_cuota"].fillna("", inplace = True) #Reemplazamos los valores null
+        df2["Monto_para_abono"] = df2["Monto_para_abono"].fillna("")#df2["Monto_para_abono"].fillna("", inplace = True) #Reemplazamos los valores null
+        df2["Comision_e_iva_comision"] = df2["Comision_e_iva_comision"].fillna("")#df2["Comision_e_iva_comision"].fillna("", inplace = True) #Reemplazamos los valores null      
+        df2["Comision_adicional_e_iva_comision_adicional"] = df2["Comision_adicional_e_iva_comision_adicional"].fillna("")#df2["Comision_adicional_e_iva_comision_adicional"].fillna("", inplace = True) #Reemplazamos los valores null ......
+        df2["Numero_boleta"] = df2["Numero_boleta"].fillna("")#df2["Numero_boleta"].fillna("", inplace = True) #Reemplazamos los valores null 
+        df2["Monto_anulacion"] = df2["Monto_anulacion"].fillna("")#df2["Monto_anulacion"].fillna("", inplace = True) #Reemplazamos los valores null
+        df2["Monto_anulacion"] = df2["Monto_anulacion"].fillna("0")#df2["Monto_anulacion"].fillna("0", inplace = True)
+        df2["Devolucion_comision_e_iva_comision"] = df2["Devolucion_comision_e_iva_comision"].fillna(0)#df2["Devolucion_comision_e_iva_comision"].fillna(0) #Reemplazamos los valores null 
+        df2["Devolucion_comision_adicional_e_iva_comision"] = df2["Devolucion_comision_adicional_e_iva_comision"].fillna("")#df2["Devolucion_comision_adicional_e_iva_comision"].fillna("", inplace = True) #Reemplazamos los valores null .......
+        df2["Monto_retencion"] = df2["Monto_retencion"].fillna("")#df2["Monto_retencion"].fillna("", inplace = True) #Reemplazamos los valores null ......
+        df2["Periodo_de_cobro"] = df2["Periodo_de_cobro"].fillna("")#df2["Periodo_de_cobro"].fillna("", inplace = True) #Reemplazamos los valores null ....
+        df2["Motivo"] = df2["Motivo"].fillna("")#df2["Motivo"].fillna("", inplace = True) #Reemplazamos los valores null          
+        df2["Detalle_cobros_u_observacion"] = df2["Detalle_cobros_u_observacion"].fillna("")#df2["Detalle_cobros_u_observacion"].fillna("", inplace = True) #Reemplazamos los valores null    
+        df2["Monto"] = df2["Monto"].fillna("")#df2["Monto"].fillna("", inplace = True) #Reemplazamos los valores null    
+        df2["IVA"] = df2["IVA"].fillna("")#df2["IVA"].fillna("", inplace = True) #Reemplazamos los valores null    
+        df2["Fecha_abono"] = df2["Fecha_abono"].fillna("")#df2["Fecha_abono"].fillna("", inplace = True) #Reemplazamos los valores null       
+        df2["Cuenta_de_abono"] = df2["Cuenta_de_abono"].fillna("") #df2["Cuenta_de_abono"].fillna("", inplace = True) #Reemplazamos los valores null           
+        df2["Local"] = df2["Local"].fillna("") #df2["Local"].fillna("", inplace = True) #Reemplazamos los valores null
 
         #Seteo de formato de cada variable              
         df2['Tipo_trx']                     = df2['Tipo_trx'].astype(str)
@@ -355,6 +358,7 @@ def insert_excel_to_DWH_credito(file_name):
         print("Tiempo Fin insercion BD =", current_time_end)
 
 
+
 def retry():
     minimo = 0
     maximo = 4
@@ -367,7 +371,7 @@ def retry():
         if minimo == maximo:
             alert.envio_email("[RPA TBK TRX DUPLICADAS] Reintentos ", "Se llego al limite de reintentos : " + str(maximo))
             log = "[RPA TBK TRX DUPLICADAS] Reintentos ", "Se llego al limite de reintentos : " + str(maximo)
-            logconfig.log_info(log)
+            #logconfig.log_info(log)
             break
 
 retry()
