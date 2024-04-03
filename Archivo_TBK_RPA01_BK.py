@@ -23,6 +23,123 @@ from dotenv import load_dotenv
 load_dotenv()
 now = datetime.now()
 
+def func_descarga_archivos_mes_anterior():
+    new     = str(datetime.now().strftime("%Y-%m-%d"))
+    file    = 'PreciosFex_(' + new + ')' + '.xls'
+    url     = 'https://privado.transbank.cl/'
+    uss_    = os.getenv('ACCESS_TBK_USER')
+    pass_   = os.getenv('ACCESS_TBK_PASS')
+    options = webdriver.EdgeOptions()
+    options.add_argument("--start-maximized")
+    options.add_argument("--safebrowsing-disable-download-protection");
+    options.add_argument("safebrowsing-disable-extension-blacklist");
+    driver = webdriver.Edge(options)
+    driver.get(url)
+    time.sleep(2)
+    user = driver.find_element(By.XPATH,'/html/body/div[7]/section/div/div/div[2]/div/div[1]/section/div/div/div/div[2]/div/div/div[3]/form/div[1]/div[1]/div/input')
+    user.send_keys(uss_)
+    passw = driver.find_element(By.XPATH,'/html/body/div[7]/section/div/div/div[2]/div/div[1]/section/div/div/div/div[2]/div/div/div[3]/form/div[1]/div[3]/input')
+    passw.send_keys(pass_)
+    time.sleep(2)
+    boton_acceso = driver.find_element(By.XPATH,'/html/body/div[7]/section/div/div/div[2]/div/div[1]/section/div/div/div/div[2]/div/div/div[3]/form/div[2]/button')
+    boton_acceso.click()
+    time.sleep(20)
+    boton_trx = driver.find_element(By.XPATH,'/html/body/header/div[2]/section/div/div/div/div/div/div/ul/li[6]/a/span')
+    boton_trx.click()
+    time.sleep(2)
+    boton_liquidacion = driver.find_element(By.XPATH,'/html/body/header/div[2]/section/div/div/div/div/div/div/ul/li[6]/ul/li[1]/a/span')
+    boton_liquidacion.click()
+    time.sleep(2)
+    boton_descarga_masiva = driver.find_element(By.XPATH,'/html/body/header/div[3]/section/div/div/div/div/div/ul/li[4]/a')
+    boton_descarga_masiva.click()
+    time.sleep(2)
+    main_window = driver.current_window_handle
+    iframe = driver.find_element(By.ID, "_cl_tbk_portal10_iframe_web_Portal10IframeWebPortlet_INSTANCE_iwOacqqxsuVA_")
+    driver.switch_to.frame(iframe)
+    time.sleep(2)
+    boton_Periodo = driver.find_element(By.ID, 'isc_1K')
+    boton_Periodo.click()
+    time.sleep(1)
+    valor_segundo_mes = driver.find_element(By.XPATH, '/html/body/div[3]/div/div/div/div/table/tbody/tr[2]/td/div/nobr')
+    valor_segundo_mes.click()
+    time.sleep(1)
+    fecha_desde = driver.find_element(By.XPATH, '/html/body/div[2]/div/div/div/div[2]/div/div/div/div/div/div[1]/div/div[1]/div/div[1]/div/form/table/tbody/tr[2]/td[4]/table/tbody/tr/td[1]/input')
+    fecha_hasta = driver.find_element(By.XPATH, '/html/body/div[2]/div/div/div/div[2]/div/div/div/div/div/div[1]/div/div[1]/div/div[1]/div/form/table/tbody/tr[2]/td[6]/table/tbody/tr/td[1]/input')    
+    dt = datetime.now()
+    if dt.day >9:
+        fecha_desde.send_keys(Keys.BACKSPACE)
+        fecha_desde.send_keys(Keys.BACKSPACE)
+    else:
+        fecha_desde.send_keys(Keys.BACKSPACE)
+    fecha_desde.send_keys(1)
+    time.sleep(1)
+    if dt.day >9:
+        fecha_hasta.send_keys(Keys.BACKSPACE)
+        fecha_hasta.send_keys(Keys.BACKSPACE)
+    else:
+        fecha_hasta.send_keys(Keys.BACKSPACE)
+    time.sleep(1)
+    dt = datetime.now()
+    if dt.month ==1: # para enero se ve el ultimo dia del mes anterior
+        fecha_hasta.send_keys(31)#diciembre
+    elif dt.month ==2: # para febrero se ve el ultimo dia del mes anterior y asi sucesivamente
+        fecha_hasta.send_keys(31)#enero
+    elif dt.month ==3: # para febrero se ve el ultimo dia del mes anterior y asi sucesivamente
+        fecha_hasta.send_keys(28)#febrero
+    elif dt.month ==4: # para febrero se ve el ultimo dia del mes anterior y asi sucesivamente
+        fecha_hasta.send_keys(31)#marz
+    elif dt.month ==5: # para febrero se ve el ultimo dia del mes anterior y asi sucesivamente
+        fecha_hasta.send_keys(30)#abril
+    elif dt.month ==6: # para febrero se ve el ultimo dia del mes anterior y asi sucesivamente
+        fecha_hasta.send_keys(31)#mayo
+    elif dt.month ==7: # para febrero se ve el ultimo dia del mes anterior y asi sucesivamente
+        fecha_hasta.send_keys(30)#junio
+    elif dt.month ==8: # para febrero se ve el ultimo dia del mes anterior y asi sucesivamente
+        fecha_hasta.send_keys(31)#julio
+    elif dt.month ==9: # para febrero se ve el ultimo dia del mes anterior y asi sucesivamente
+        fecha_hasta.send_keys(31)#agosto
+    elif dt.month ==10: # para febrero se ve el ultimo dia del mes anterior y asi sucesivamente
+        fecha_hasta.send_keys(30)#sept
+    elif dt.month ==11: # para febrero se ve el ultimo dia del mes anterior y asi sucesivamente
+        fecha_hasta.send_keys(31)#octubre
+    elif dt.month ==12: # para febrero se ve el ultimo dia del mes anterior y asi sucesivamente
+        fecha_hasta.send_keys(30)#noviembre
+    #fecha_hasta.click
+    time.sleep(2)
+    boton_local = driver.find_element(By.XPATH, '/html/body/div[2]/div/div/div/div[2]/div/div/div/div/div/div[1]/div/div[2]/div/div[2]/div/div[2]/div/div/div/img')
+    boton_local.click()
+    time.sleep(5)
+    #boton_desmarcar = driver.find_element(By.XPATH, '/html/body/div[4]/div/div[2]/div/div/div/div[2]/div/div[2]/div/table/tbody/tr/td')
+    #boton_desmarcar.click()  
+    #time.sleep(1)
+    boton_desmarcar = driver.find_element(By.XPATH, '/html/body/div[5]/div/div[2]/div/div/div/div[2]/div/div[2]/div/table/tbody/tr/td')
+    boton_desmarcar.click()
+    time.sleep(1)
+    for i in range (0,12):
+        try:
+            boton_MC1 = driver.find_element(By.CSS_SELECTOR, '.txpms-option:nth-child('+str(i)+') > input')
+            inner_text = boton_MC1.get_attribute("outerHTML")
+            if '07737092' in inner_text:
+                boton_MC1.click()
+                #print(inner_text)
+            elif '07737084' in inner_text:
+                boton_MC1.click()
+                #print(inner_text)
+        except NoSuchElementException:
+            boton_MC1 = 0
+    #boton_MC1 = driver.find_element(By.XPATH, '/html/body/div[4]/div/div[2]/div/div/div/div[1]/div/div[2]/div/div/div/div[6]/input')
+    #boton_MC1.click()
+    #time.sleep(1)
+    #boton_MC2 = driver.find_element(By.XPATH, '/html/body/div[4]/div/div[2]/div/div/div/div[1]/div/div[2]/div/div/div/div[7]/input')
+    #boton_MC2.click()
+    time.sleep(2)
+    confirm = driver.find_element(By.XPATH, '/html/body/div[5]/div/div[2]/div/div/div/div[3]/div/div[1]/div/table/tbody/tr/td')#primer div 5 puede ser 4
+    confirm.click()
+    time.sleep(1)
+    solicitar = driver.find_element(By.XPATH, '/html/body/div[2]/div/div/div/div[2]/div/div/div/div/div/div[1]/div/div[3]/div/div[1]/div/table/tbody/tr/td')
+    solicitar.click()
+    time.sleep(3)
+
 def func_descarga_archivos():
     new     = str(datetime.now().strftime("%Y-%m-%d"))
     file    = 'PreciosFex_(' + new + ')' + '.xls'
@@ -75,7 +192,7 @@ def func_descarga_archivos():
     boton_desmarcar = driver.find_element(By.XPATH, '/html/body/div[4]/div/div[2]/div/div/div/div[2]/div/div[2]/div/table/tbody/tr/td')
     boton_desmarcar.click()
     time.sleep(1)  
-    for i in range (0,10):
+    for i in range (0,12):
         try:
             boton_MC1 = driver.find_element(By.CSS_SELECTOR, '.txpms-option:nth-child('+str(i)+') > input')
             inner_text = boton_MC1.get_attribute("outerHTML")
@@ -122,7 +239,7 @@ def func_descarga_archivos():
     dt = datetime.now()
     donwload_day = driver.find_element(By.XPATH,'/html/body/div[1]/section/div[3]/div/div/div[2]/div[1]/input')
     donwload_day.send_keys(dt.day)
-    time.sleep(1)
+    time.sleep(60)# poner mas tiempo
     busqueda = driver.find_element(By.XPATH, '/html/body/div[1]/section/div[3]/div/div/div[4]/button')
     busqueda.click()
     time.sleep(1)
@@ -133,11 +250,18 @@ def func_descarga_archivos():
     nombre_archivo = nombre.text
     nombre2 = driver.find_element(By.XPATH,'/html/body/div[1]/section/div[4]/div[4]/div[1]/div/table/tbody/tr[2]/td[4]')
     nombre_archivo2 = nombre2.text
+    nombre3 = driver.find_element(By.XPATH,'/html/body/div[1]/section/div[4]/div[4]/div[1]/div/table/tbody/tr[3]/td[4]')
+    nombre_archivo3 = nombre3.text
+    nombre4 = driver.find_element(By.XPATH,'/html/body/div[1]/section/div[4]/div[4]/div[1]/div/table/tbody/tr[4]/td[4]')
+    nombre_archivo4 = nombre4.text
 
     dt = datetime.now()
     dia_uno = "1"
     dia_actual = str(dt.day)
+    dia_actual_mes_anterior = str(31) # cambiar
     mes = str(datetime.now().strftime("%m/%Y"))
+    mes_anterior = "03/2024" # cambiar
+
     espacio = " al "
     espacio2 = " de "
     espacio3 = " "
@@ -156,6 +280,22 @@ def func_descarga_archivos():
         full_name_credito   = c + dia_uno + espacio + dia_actual + espacio2 + mes + espacio3
         nombre_final_debito  = nombre_archivo.replace(full_name_debito,"")
         nombre_final_credito = nombre_archivo2.replace(full_name_credito,"")
+
+    #reconocemos cual nombre es credito y cual de debito del mes anterior
+    if 'credito' in nombre_archivo3:
+        v = "Extracción Masiva Credito pesos del "
+        y = "Extracción Masiva Débito pesos del "
+        full_name_debito2    = y + dia_uno + espacio + dia_actual_mes_anterior + espacio2 + mes_anterior + espacio3
+        full_name_credito2   = b + dia_uno + espacio + dia_actual_mes_anterior + espacio2 + mes_anterior + espacio3
+        nombre_final_debito2  = nombre_archivo4.replace(full_name_debito2,"")
+        nombre_final_credito2 = nombre_archivo3.replace(full_name_credito2,"")
+    else:
+        y = "Extracción Masiva Credito pesos del "
+        v = "Extracción Masiva Débito pesos del "
+        full_name_debito2    = v + dia_uno + espacio + dia_actual_mes_anterior + espacio2 + mes_anterior + espacio3
+        full_name_credito2   = y + dia_uno + espacio + dia_actual_mes_anterior + espacio2 + mes_anterior + espacio3
+        nombre_final_debito2  = nombre_archivo3.replace(full_name_debito2,"")
+        nombre_final_credito2 = nombre_archivo4.replace(full_name_credito2,"")
     #
     #
     nombre_archivo = nombre_archivo[55:] # se selecciona el nombre del archivo como queda guardado en carpeta
@@ -165,12 +305,23 @@ def func_descarga_archivos():
     time.sleep(5)
     download_file2 = driver.find_element(By.XPATH,'/html/body/div[1]/section/div[4]/div[4]/div[1]/div/table/tbody/tr[2]/td[6]/table/tbody/tr[1]/td/a/i')
     download_file2.click()
+    time.sleep(1)
+    download_file3 = driver.find_element(By.XPATH,'/html/body/div[1]/section/div[4]/div[4]/div[1]/div/table/tbody/tr[3]/td[6]/table/tbody/tr[1]/td/a/i')
+    download_file3.click()
+    time.sleep(5)
+    download_file4 = driver.find_element(By.XPATH,'/html/body/div[1]/section/div[4]/div[4]/div[1]/div/table/tbody/tr[4]/td[6]/table/tbody/tr[1]/td/a/i')
+    download_file4.click()
     time.sleep(20)
     # hay dias en que viene el archivo con formato .dat
     nombre_final_credito_dat = nombre_final_credito.replace("zip","dat")
     nombre_final_debito_dat = nombre_final_debito.replace("zip","dat")
+    nombre_final_credito_dat2 = nombre_final_credito2.replace("zip","dat")
+    nombre_final_debito_dat2 = nombre_final_debito2.replace("zip","dat")
+
     archivo_comprimido_debito = os.getenv('RUTA_CARPETA') + nombre_final_debito
-    archivo_comprimido_credito = os.getenv('RUTA_CARPETA') + nombre_final_credito    
+    archivo_comprimido_credito = os.getenv('RUTA_CARPETA') + nombre_final_credito
+    archivo_comprimido_debito2 = os.getenv('RUTA_CARPETA') + nombre_final_debito2
+    archivo_comprimido_credito2 = os.getenv('RUTA_CARPETA') + nombre_final_credito2
     #Extraemos el archivo de debito que viene con formato zip
 
     if '.zip' in archivo_comprimido_debito:
@@ -182,18 +333,42 @@ def func_descarga_archivos():
         with ZipFile(archivo_comprimido_credito, "r") as zip:
             zip.printdir()
             zip.extractall(os.getenv('RUTA_CARPETA'))
+    if '.zip' in archivo_comprimido_debito2:
+        with ZipFile(archivo_comprimido_debito2, "r") as zip:
+            zip.printdir()
+            zip.extractall(os.getenv('RUTA_CARPETA'))
+    if '.zip' in archivo_comprimido_credito2:
+        #Extraemos el archivo de debito que viene con formato zip
+        with ZipFile(archivo_comprimido_credito2, "r") as zip:
+            zip.printdir()
+            zip.extractall(os.getenv('RUTA_CARPETA'))
     #Borramos el archivo zip
     time.sleep(5)    
     bd_tbk.delete_credito_t()
+    print("-------------borrado tabla temporal credito")     
     bd_tbk.delete_debito_t()
+    print("-------------borrado tabla temporal debito")     
+    print("-------------Archivos a cargar en tablas STG")    
     print(nombre_final_debito_dat)
+    print("-------------1")
     print(nombre_final_credito_dat)
+    print("-------------2")
+    print(nombre_final_debito_dat2)
+    print("-------------3")
+    print(nombre_final_credito_dat2)
+    print("-------------4")
     time.sleep(5)    
     insert_excel_to_DWH_debito(nombre_final_debito_dat)
     time.sleep(10)
     insert_excel_to_DWH_credito(nombre_final_credito_dat)
+    time.sleep(5)    
+    insert_excel_to_DWH_debito(nombre_final_debito_dat2)
+    time.sleep(10)
+    insert_excel_to_DWH_credito(nombre_final_credito_dat2)    
     os.remove(archivo_comprimido_debito)
-    os.remove(archivo_comprimido_credito)    
+    os.remove(archivo_comprimido_credito)
+    os.remove(archivo_comprimido_debito2)
+    os.remove(archivo_comprimido_credito2)
 
 def insert_excel_to_DWH_debito(file_name):
     path = os.getenv('RUTA_CARPETA') + file_name # Cambiar luego la ruta donde quedara el archivo final.
@@ -364,13 +539,16 @@ def retry():
     maximo = 4
     while minimo <= maximo:
         try:
+            func_descarga_archivos_mes_anterior()
+            time.sleep(10)       
             func_descarga_archivos()
+            alert.envio_email("[RPA TBK TRX DUPLICADAS] Proceso exito ", "Se completó con exito el proceso de carga de 4 archivos TBK " )            
             break
         except:
             minimo += 1
         if minimo == maximo:
             alert.envio_email("[RPA TBK TRX DUPLICADAS] Reintentos ", "Se llego al limite de reintentos : " + str(maximo))
-            log = "[RPA TBK TRX DUPLICADAS] Reintentos ", "Se llego al limite de reintentos : " + str(maximo)
+            #log = "[RPA TBK TRX DUPLICADAS] Reintentos ", "Se llego al limite de reintentos : " + str(maximo)
             #logconfig.log_info(log)
             break
 
